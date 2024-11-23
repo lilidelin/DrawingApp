@@ -183,6 +183,7 @@
     </ResourceCompile>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="CLine.h" />
     <ClInclude Include="CShape.h" />
     <ClInclude Include="DrawingApp.h" />
     <ClInclude Include="DrawingAppDlg.h" />
@@ -192,6 +193,7 @@
     <ClInclude Include="targetver.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="CLine.cpp" />
     <ClCompile Include="CShape.cpp" />
     <ClCompile Include="DrawingApp.cpp" />
     <ClCompile Include="DrawingAppDlg.cpp" />

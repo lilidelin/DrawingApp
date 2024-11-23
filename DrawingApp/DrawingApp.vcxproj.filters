@@ -36,6 +36,9 @@
     <ClInclude Include="CShape.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="CLine.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="DrawingApp.cpp">
@@ -48,6 +51,9 @@
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="CShape.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="CLine.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>
