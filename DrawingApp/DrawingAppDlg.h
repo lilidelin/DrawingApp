@@ -3,7 +3,8 @@
 //
 
 #pragma once
-
+#include"CLine.h"
+#include<vector>
 
 // CDrawingAppDlg 对话框
 class CDrawingAppDlg : public CDialogEx
@@ -30,5 +31,15 @@ protected:
 	afx_msg void OnSysCommand(UINT nID, LPARAM lParam);
 	afx_msg void OnPaint();
 	afx_msg HCURSOR OnQueryDragIcon();
+	afx_msg void OnMouseMove(UINT nFlags, CPoint point);
+	afx_msg void OnLButtonDown(UINT nFlags, CPoint point);
+	afx_msg void OnLButtonUp(UINT nFlags, CPoint point);
 	DECLARE_MESSAGE_MAP()
+
+private:
+	std::vector<CShape*> m_shapes;//储存所有图形
+	CShape* m_currentShape;  //当前正在绘制的图形
+	CRect m_drawArea;   //绘图区域
+
+	bool m_isDrawing;  //是否正在绘制
 };
