@@ -31,3 +31,8 @@ void CLine::Serialize(CArchive& ar)
 		ar >> m_startPoint >> m_endPoint;
 	}
 }
+
+void CLine::SetEndPoint(CPoint point)
+{
+	m_endPoint = point;
+}

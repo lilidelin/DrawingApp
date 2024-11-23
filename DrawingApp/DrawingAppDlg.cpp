@@ -51,7 +51,7 @@ END_MESSAGE_MAP()
 
 
 CDrawingAppDlg::CDrawingAppDlg(CWnd* pParent /*=nullptr*/)
-	: CDialogEx(IDD_DRAWINGAPP_DIALOG, pParent)
+	: CDialogEx(IDD_DRAWINGAPP_DIALOG, pParent),m_currentShape(nullptr),m_isDrawing(false)
 {
 	m_hIcon = AfxGetApp()->LoadIcon(IDR_MAINFRAME);
 }
@@ -65,6 +65,9 @@ BEGIN_MESSAGE_MAP(CDrawingAppDlg, CDialogEx)
 	ON_WM_SYSCOMMAND()
 	ON_WM_PAINT()
 	ON_WM_QUERYDRAGICON()
+	ON_WM_LBUTTONDOWN()
+	ON_WM_LBUTTONUP()
+	ON_WM_MOUSEMOVE()
 END_MESSAGE_MAP()
 
 
@@ -100,6 +103,12 @@ BOOL CDrawingAppDlg::OnInitDialog()
 	SetIcon(m_hIcon, FALSE);		// 设置小图标
 
 	// TODO: 在此添加额外的初始化代码
+	CWnd* pDrawArea = GetDlgItem(IDC_DRAW_AREA);
+	if (pDrawArea)
+	{
+		pDrawArea->GetWindowRect(&m_drawArea);
+		ScreenToClient(&m_drawArea);
+	}
 
 	return TRUE;  // 除非将焦点设置到控件，否则返回 TRUE
 }
@@ -123,26 +132,18 @@ void CDrawingAppDlg::OnSysCommand(UINT nID, LPARAM lParam)
 
 void CDrawingAppDlg::OnPaint()
 {
-	if (IsIconic())
+	CPaintDC dc(this); // 用于绘制的设备上下文
+
+	// 遍历所有图形并绘制
+	for (CShape* shape : m_shapes)
 	{
-		CPaintDC dc(this); // 用于绘制的设备上下文
-
-		SendMessage(WM_ICONERASEBKGND, reinterpret_cast<WPARAM>(dc.GetSafeHdc()), 0);
-
-		// 使图标在工作区矩形中居中
-		int cxIcon = GetSystemMetrics(SM_CXICON);
-		int cyIcon = GetSystemMetrics(SM_CYICON);
-		CRect rect;
-		GetClientRect(&rect);
-		int x = (rect.Width() - cxIcon + 1) / 2;
-		int y = (rect.Height() - cyIcon + 1) / 2;
-
-		// 绘制图标
-		dc.DrawIcon(x, y, m_hIcon);
+		shape->Draw(&dc);
 	}
-	else
+
+	// 如果正在绘制，绘制临时图形
+	if (m_currentShape)
 	{
-		CDialogEx::OnPaint();
+		m_currentShape->Draw(&dc);
 	}
 }
 
@@ -152,4 +153,50 @@ HCURSOR CDrawingAppDlg::OnQueryDragIcon()
 {
 	return static_cast<HCURSOR>(m_hIcon);
 }
+
+void CDrawingAppDlg::OnLButtonDown(UINT nFlags, CPoint point)
+{
+	if (m_drawArea.PtInRect(point))
+	{
+		m_isDrawing = true;//开始绘制
+		m_currentShape = new CLine(point, point);//创建新线条
+	}
+	CDialogEx::OnLButtonDown(nFlags, point);
+}
+
+void CDrawingAppDlg::OnMouseMove(UINT nFlags, CPoint point)
+{
+	if (m_isDrawing && m_currentShape)
+	{
+		if (m_drawArea.PtInRect(point))
+		{
+			m_currentShape->SetEndPoint(point);
+			InvalidateRect(m_drawArea);//触发重绘
+		}
+	}
+	CDialogEx::OnMouseMove(nFlags, point);
+}
+
+void CDrawingAppDlg::OnLButtonUp(UINT nFlags, CPoint point)
+{
+	if (m_isDrawing)
+	{
+		m_isDrawing = false;//结束绘制
+
+		if (m_drawArea.PtInRect(point))
+		{
+			m_currentShape->SetEndPoint(point);
+			m_shapes.push_back(m_currentShape);
+		}
+		else {
+			delete m_currentShape;//如果不在绘图区域，释放内存
+		}
+		m_currentShape = nullptr;//清空当前图形
+		InvalidateRect(m_drawArea);
+	}
+	InvalidateRect(m_drawArea);
+	CDialogEx::OnLButtonUp(nFlags, point);
+}
+
+
 
