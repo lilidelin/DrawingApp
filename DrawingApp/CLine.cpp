@@ -36,3 +36,13 @@ void CLine::SetEndPoint(CPoint point)
 {
 	m_endPoint = point;
 }
+
+CPoint CLine::GetStartPoint()
+{
+	return m_startPoint;
+}
+
+CPoint CLine::GetEndPoint()
+{
+	return m_endPoint;
+}

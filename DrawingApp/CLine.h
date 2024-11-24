@@ -13,6 +13,8 @@ public:
 	void Move(CPoint delta)override;
 	void Serialize(CArchive& ar)override;
 	void SetEndPoint(CPoint point) override;
+	CPoint GetStartPoint()override;
+	CPoint GetEndPoint()override;
 private:
 	CPoint m_startPoint, m_endPoint;
 };

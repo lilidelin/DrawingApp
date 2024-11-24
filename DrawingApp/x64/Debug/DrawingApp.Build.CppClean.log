@@ -2,7 +2,6 @@ d:\visual stdio project\drawingapp\drawingapp\x64\debug\drawingapp.pch
 d:\visual stdio project\drawingapp\drawingapp\x64\debug\vc143.pdb
 d:\visual stdio project\drawingapp\drawingapp\x64\debug\vc143.idb
 d:\visual stdio project\drawingapp\drawingapp\x64\debug\pch.obj
-d:\visual stdio project\drawingapp\drawingapp\x64\debug\drawingappdlg.obj
 d:\visual stdio project\drawingapp\drawingapp\x64\debug\drawingapp.obj
 d:\visual stdio project\drawingapp\drawingapp\x64\debug\cshape.obj
 d:\visual stdio project\drawingapp\drawingapp\x64\debug\cline.obj
@@ -10,6 +9,7 @@ d:\visual stdio project\drawingapp\x64\debug\drawingapp.exe
 d:\visual stdio project\drawingapp\x64\debug\drawingapp.pdb
 d:\visual stdio project\drawingapp\drawingapp\x64\debug\drawingapp.res
 d:\visual stdio project\drawingapp\drawingapp\x64\debug\drawingapp.ilk
+d:\visual stdio project\drawingapp\drawingapp\x64\debug\drawingappdlg.obj
 d:\visual stdio project\drawingapp\drawingapp\x64\debug\drawingapp.tlog\cl.command.1.tlog
 d:\visual stdio project\drawingapp\drawingapp\x64\debug\drawingapp.tlog\cl.items.tlog
 d:\visual stdio project\drawingapp\drawingapp\x64\debug\drawingapp.tlog\cl.read.1.tlog

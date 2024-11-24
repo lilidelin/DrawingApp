@@ -64,6 +64,7 @@ void CDrawingAppDlg::DoDataExchange(CDataExchange* pDX)
 BEGIN_MESSAGE_MAP(CDrawingAppDlg, CDialogEx)
 	ON_WM_SYSCOMMAND()
 	ON_WM_PAINT()
+	ON_WM_ERASEBKGND()
 	ON_WM_QUERYDRAGICON()
 	ON_WM_LBUTTONDOWN()
 	ON_WM_LBUTTONUP()
@@ -132,12 +133,17 @@ void CDrawingAppDlg::OnSysCommand(UINT nID, LPARAM lParam)
 
 void CDrawingAppDlg::OnPaint()
 {
-	CPaintDC dc(this); // 用于绘制的设备上下文
+	CPaintDC dc(GetDlgItem(IDC_DRAW_AREA)); // 用于绘制的设备上下文
 
 	// 遍历所有图形并绘制
 	for (CShape* shape : m_shapes)
 	{
 		shape->Draw(&dc);
+		TRACE("Drawing shape from (%d, %d) to (%d, %d)\n",
+			shape->GetStartPoint().x,
+			shape->GetStartPoint().y,
+			shape->GetEndPoint().x,
+			shape->GetEndPoint().y);
 	}
 
 	// 如果正在绘制，绘制临时图形
@@ -146,6 +152,12 @@ void CDrawingAppDlg::OnPaint()
 		m_currentShape->Draw(&dc);
 	}
 }
+
+BOOL CDrawingAppDlg::OnEraseBkgnd(CDC* pDC)
+{
+	return TRUE; // 阻止擦除背景
+}
+
 
 //当用户拖动最小化窗口时系统调用此函数取得光标
 //显示。
@@ -160,6 +172,7 @@ void CDrawingAppDlg::OnLButtonDown(UINT nFlags, CPoint point)
 	{
 		m_isDrawing = true;//开始绘制
 		m_currentShape = new CLine(point, point);//创建新线条
+		InvalidateRect(m_drawArea);
 	}
 	CDialogEx::OnLButtonDown(nFlags, point);
 }
@@ -171,7 +184,7 @@ void CDrawingAppDlg::OnMouseMove(UINT nFlags, CPoint point)
 		if (m_drawArea.PtInRect(point))
 		{
 			m_currentShape->SetEndPoint(point);
-			InvalidateRect(m_drawArea);//触发重绘
+			//InvalidateRect(m_drawArea);//触发重绘
 		}
 	}
 	CDialogEx::OnMouseMove(nFlags, point);
@@ -187,6 +200,11 @@ void CDrawingAppDlg::OnLButtonUp(UINT nFlags, CPoint point)
 		{
 			m_currentShape->SetEndPoint(point);
 			m_shapes.push_back(m_currentShape);
+			TRACE("Added shape from (%d, %d) to (%d, %d)\n",
+				m_currentShape->GetStartPoint().x,
+				m_currentShape->GetStartPoint().y,
+				m_currentShape->GetEndPoint().x,
+				m_currentShape->GetEndPoint().y);
 		}
 		else {
 			delete m_currentShape;//如果不在绘图区域，释放内存
@@ -194,7 +212,6 @@ void CDrawingAppDlg::OnLButtonUp(UINT nFlags, CPoint point)
 		m_currentShape = nullptr;//清空当前图形
 		InvalidateRect(m_drawArea);
 	}
-	InvalidateRect(m_drawArea);
 	CDialogEx::OnLButtonUp(nFlags, point);
 }
 
