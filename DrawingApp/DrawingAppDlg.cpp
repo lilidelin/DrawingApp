@@ -244,7 +244,7 @@ void CDrawingAppDlg::OnRButtonDown(UINT nFlags, CPoint point) {
 	CDialogEx::OnRButtonDown(nFlags,point);
 }
 
-void CDrawingAppDlg::OnRButttonUp(UINT nFlags, CPoint point)
+void CDrawingAppDlg::OnRButtonUp(UINT nFlags, CPoint point)
 {
 	m_isDragging = false;
 	if (m_drawArea.PtInRect(point)) {
