@@ -64,13 +64,15 @@ void CDrawingAppDlg::DoDataExchange(CDataExchange* pDX)
 BEGIN_MESSAGE_MAP(CDrawingAppDlg, CDialogEx)
 	ON_WM_SYSCOMMAND()
 	ON_WM_PAINT()
-	//ON_WM_ERASEBKGND()
 	ON_WM_QUERYDRAGICON()
 	ON_WM_LBUTTONDOWN()
 	ON_WM_LBUTTONUP()
 	ON_WM_RBUTTONDOWN()
 	ON_WM_RBUTTONUP()
 	ON_WM_MOUSEMOVE()
+	ON_BN_CLICKED(IDC_BUTTON_LOAD, &CDrawingAppDlg::OnBnClickedButtonLoad)
+	ON_BN_CLICKED(IDC_BUTTON_SAVE, &CDrawingAppDlg::OnBnClickedButtonSave)
+	ON_BN_CLICKED(IDE_BUTTON_Line, &CDrawingAppDlg::OnBnClickedButtonLine)
 END_MESSAGE_MAP()
 
 
@@ -256,3 +258,37 @@ void CDrawingAppDlg::OnRButtonUp(UINT nFlags, CPoint point)
 	m_currentDrag = nullptr;
 }
 
+
+
+void CDrawingAppDlg::OnBnClickedButtonLoad()
+{
+	// TODO: 在此添加控件通知处理程序代码
+}
+
+
+void CDrawingAppDlg::OnBnClickedButtonSave()
+{
+	// TODO: 在此添加控件通知处理程序代码
+	CFileDialog dlg(FALSE, _T("dat"), _T("shapes.dat"), OFN_OVERWRITEPROMPT, _T("Shape Files (*.dat)|*.dat|All Files (*.*)|*.*||"));
+	//创建保存文件对话框
+	if (dlg.DoModal() == IDOK)
+	{
+		CFile file(dlg.GetPathName(), CFile::modeCreate | CFile::modeWrite);
+		CArchive ar(&file, CArchive::store);
+		int shapeCount = static_cast<int>(m_shapes.size());
+		ar << shapeCount;
+		for (CShape* shape : m_shapes)
+		{
+			shape->Serialize(ar);
+		}
+		ar.Close();
+		file.Close();
+		AfxMessageBox(_T("Shapes saved successfully!"));
+	}
+}
+
+
+void CDrawingAppDlg::OnBnClickedButtonLine()
+{
+	// TODO: 在此添加控件通知处理程序代码
+}

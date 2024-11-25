@@ -48,4 +48,8 @@ private:
 
 	bool m_isDrawing;  //是否正在绘制
 	bool m_isDragging;//是否正在拖动
+public:
+	afx_msg void OnBnClickedButtonLoad();
+	afx_msg void OnBnClickedButtonSave();
+	afx_msg void OnBnClickedButtonLine();
 };
