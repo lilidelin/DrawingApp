@@ -64,7 +64,7 @@ void CDrawingAppDlg::DoDataExchange(CDataExchange* pDX)
 BEGIN_MESSAGE_MAP(CDrawingAppDlg, CDialogEx)
 	ON_WM_SYSCOMMAND()
 	ON_WM_PAINT()
-	ON_WM_ERASEBKGND()
+	//ON_WM_ERASEBKGND()
 	ON_WM_QUERYDRAGICON()
 	ON_WM_LBUTTONDOWN()
 	ON_WM_LBUTTONUP()
@@ -133,8 +133,8 @@ void CDrawingAppDlg::OnSysCommand(UINT nID, LPARAM lParam)
 
 void CDrawingAppDlg::OnPaint()
 {
-	CPaintDC dc(GetDlgItem(IDC_DRAW_AREA)); // 用于绘制的设备上下文
-
+	CClientDC dc(this); // 用于绘制的设备上下文
+	
 	// 遍历所有图形并绘制
 	for (CShape* shape : m_shapes)
 	{
@@ -155,7 +155,7 @@ void CDrawingAppDlg::OnPaint()
 
 BOOL CDrawingAppDlg::OnEraseBkgnd(CDC* pDC)
 {
-	return TRUE; // 阻止擦除背景
+	return FALSE; // 阻止擦除背景
 }
 
 
@@ -173,6 +173,7 @@ void CDrawingAppDlg::OnLButtonDown(UINT nFlags, CPoint point)
 		m_isDrawing = true;//开始绘制
 		m_currentShape = new CLine(point, point);//创建新线条
 		InvalidateRect(m_drawArea);
+		UpdateWindow();
 	}
 	CDialogEx::OnLButtonDown(nFlags, point);
 }
@@ -184,7 +185,8 @@ void CDrawingAppDlg::OnMouseMove(UINT nFlags, CPoint point)
 		if (m_drawArea.PtInRect(point))
 		{
 			m_currentShape->SetEndPoint(point);
-			//InvalidateRect(m_drawArea);//触发重绘
+			InvalidateRect(m_drawArea);//触发重绘
+			UpdateWindow();
 		}
 	}
 	CDialogEx::OnMouseMove(nFlags, point);
@@ -211,9 +213,20 @@ void CDrawingAppDlg::OnLButtonUp(UINT nFlags, CPoint point)
 		}
 		m_currentShape = nullptr;//清空当前图形
 		InvalidateRect(m_drawArea);
+		UpdateWindow();
 	}
 	CDialogEx::OnLButtonUp(nFlags, point);
 }
 
+void CDrawingAppDlg::OnRButtonDown(UINT nFlags, CPoint point) {
+	for (CShape* shape : m_shapes)
+	{
+		if (shape->HitTest(point)) {
+			break;
+		}
+	}
+	Invalidate();
+	CDialogEx::OnRButtonDown(nFlags,point);
+}
 
 
