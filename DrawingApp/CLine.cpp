@@ -11,7 +11,7 @@ void CLine::Draw(CDC* pDC) {
 bool CLine::HitTest(CPoint point) {
 	CRect rect(m_startPoint, m_endPoint);
 	rect.NormalizeRect();
-	rect.InflateRect(5, 5);
+	rect.InflateRect(2, 2);
 	return rect.PtInRect(point);
 }
 
@@ -45,4 +45,8 @@ CPoint CLine::GetStartPoint()
 CPoint CLine::GetEndPoint()
 {
 	return m_endPoint;
+}
+
+CPoint CLine::CaculateOffset(CPoint point) {
+	return CPoint(point.x - m_startPoint.x, point.y - m_startPoint.y);
 }

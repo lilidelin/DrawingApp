@@ -11,4 +11,5 @@ public:
 	virtual void SetEndPoint(CPoint point) = 0;//设置终点
 	virtual CPoint GetStartPoint() = 0;//返回起始点
 	virtual CPoint GetEndPoint() = 0;//返回终点
+	virtual CPoint CaculateOffset(CPoint point) = 0;//计算delta的值
 };

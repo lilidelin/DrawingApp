@@ -68,6 +68,8 @@ BEGIN_MESSAGE_MAP(CDrawingAppDlg, CDialogEx)
 	ON_WM_QUERYDRAGICON()
 	ON_WM_LBUTTONDOWN()
 	ON_WM_LBUTTONUP()
+	ON_WM_RBUTTONDOWN()
+	ON_WM_RBUTTONUP()
 	ON_WM_MOUSEMOVE()
 END_MESSAGE_MAP()
 
@@ -189,6 +191,16 @@ void CDrawingAppDlg::OnMouseMove(UINT nFlags, CPoint point)
 			UpdateWindow();
 		}
 	}
+	else if (m_isDragging&&m_currentDrag)
+	{
+		if (m_drawArea.PtInRect(point)) {
+			CPoint delat(point.x - dragOffset.x, point.y - dragOffset.y);
+			dragOffset = point;
+			m_currentDrag->Move(delat);
+			InvalidateRect(m_drawArea);
+			UpdateWindow();
+		}
+	}
 	CDialogEx::OnMouseMove(nFlags, point);
 }
 
@@ -222,11 +234,25 @@ void CDrawingAppDlg::OnRButtonDown(UINT nFlags, CPoint point) {
 	for (CShape* shape : m_shapes)
 	{
 		if (shape->HitTest(point)) {
+			m_isDragging = true;
+			m_currentDrag = shape;
+			dragOffset = point;
 			break;
 		}
 	}
-	Invalidate();
+	//InvalidateRect(m_drawArea);
 	CDialogEx::OnRButtonDown(nFlags,point);
 }
 
+void CDrawingAppDlg::OnRButttonUp(UINT nFlags, CPoint point)
+{
+	m_isDragging = false;
+	if (m_drawArea.PtInRect(point)) {
+		CPoint delta(point.x - dragOffset.x, point.y - dragOffset.y);
+		m_currentDrag->Move(delta);
+		InvalidateRect(m_drawArea);
+		UpdateWindow();
+	}
+	m_currentDrag = nullptr;
+}
 

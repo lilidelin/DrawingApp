@@ -15,6 +15,7 @@ public:
 	void SetEndPoint(CPoint point) override;
 	CPoint GetStartPoint()override;
 	CPoint GetEndPoint()override;
+	CPoint CaculateOffset(CPoint point)override;
 private:
 	CPoint m_startPoint, m_endPoint;
 };
