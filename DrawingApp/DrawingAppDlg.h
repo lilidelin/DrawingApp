@@ -4,7 +4,9 @@
 
 #pragma once
 #include"CLine.h"
+#include"CCircle.h"
 #include<vector>
+
 
 // CDrawingAppDlg 对话框
 class CDrawingAppDlg : public CDialogEx
@@ -45,6 +47,7 @@ private:
 	CShape* m_currentDrag;//当前正在拖动的图形
 	CRect m_drawArea;   //绘图区域
 	CPoint dragOffset;  //相对起点偏移量
+	enum Mode { None, DrawLine, DrawRectangle, DrawCircle } m_mode = None; // 当前模式
 
 	bool m_isDrawing;  //是否正在绘制
 	bool m_isDragging;//是否正在拖动
@@ -52,4 +55,5 @@ public:
 	afx_msg void OnBnClickedButtonLoad();
 	afx_msg void OnBnClickedButtonSave();
 	afx_msg void OnBnClickedButtonLine();
+	afx_msg void OnBnClickedButtonCircle();
 };

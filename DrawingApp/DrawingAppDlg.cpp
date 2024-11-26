@@ -73,6 +73,7 @@ BEGIN_MESSAGE_MAP(CDrawingAppDlg, CDialogEx)
 	ON_BN_CLICKED(IDC_BUTTON_LOAD, &CDrawingAppDlg::OnBnClickedButtonLoad)
 	ON_BN_CLICKED(IDC_BUTTON_SAVE, &CDrawingAppDlg::OnBnClickedButtonSave)
 	ON_BN_CLICKED(IDE_BUTTON_Line, &CDrawingAppDlg::OnBnClickedButtonLine)
+	ON_BN_CLICKED(IDC_BUTTON_Circle, &CDrawingAppDlg::OnBnClickedButtonCircle)
 END_MESSAGE_MAP()
 
 
@@ -135,27 +136,6 @@ void CDrawingAppDlg::OnSysCommand(UINT nID, LPARAM lParam)
 //  来绘制该图标。  对于使用文档/视图模型的 MFC 应用程序，
 //  这将由框架自动完成。
 
-void CDrawingAppDlg::OnPaint()
-{
-	CClientDC dc(this); // 用于绘制的设备上下文
-	
-	// 遍历所有图形并绘制
-	for (CShape* shape : m_shapes)
-	{
-		shape->Draw(&dc);
-		TRACE("Drawing shape from (%d, %d) to (%d, %d)\n",
-			shape->GetStartPoint().x,
-			shape->GetStartPoint().y,
-			shape->GetEndPoint().x,
-			shape->GetEndPoint().y);
-	}
-
-	// 如果正在绘制，绘制临时图形
-	if (m_currentShape)
-	{
-		m_currentShape->Draw(&dc);
-	}
-}
 
 BOOL CDrawingAppDlg::OnEraseBkgnd(CDC* pDC)
 {
@@ -170,12 +150,43 @@ HCURSOR CDrawingAppDlg::OnQueryDragIcon()
 	return static_cast<HCURSOR>(m_hIcon);
 }
 
+void CDrawingAppDlg::OnPaint()
+{
+	CClientDC dc(this); // 用于绘制的设备上下文
+	
+	// 遍历所有图形并绘制
+	for (CShape* shape : m_shapes)
+	{
+		shape->Draw(&dc);
+	}
+
+	// 如果正在绘制，绘制临时图形
+	if (m_currentShape)
+	{
+		m_currentShape->Draw(&dc);
+	}
+}
 void CDrawingAppDlg::OnLButtonDown(UINT nFlags, CPoint point)
 {
+	if (m_mode == None)return;
 	if (m_drawArea.PtInRect(point))
 	{
 		m_isDrawing = true;//开始绘制
-		m_currentShape = new CLine(point, point);//创建新线条
+		switch (m_mode)
+		{
+		case None:
+			break;
+		case DrawLine:
+			m_currentShape = new CLine(point, point);
+			break;
+		case DrawRectangle:
+			break;
+		case DrawCircle:
+			m_currentShape = new CCircle(point, 0);//创建圆形
+			break;
+		default:
+			break;
+		}
 		InvalidateRect(m_drawArea);
 		UpdateWindow();
 	}
@@ -216,11 +227,6 @@ void CDrawingAppDlg::OnLButtonUp(UINT nFlags, CPoint point)
 		{
 			m_currentShape->SetEndPoint(point);
 			m_shapes.push_back(m_currentShape);
-			TRACE("Added shape from (%d, %d) to (%d, %d)\n",
-				m_currentShape->GetStartPoint().x,
-				m_currentShape->GetStartPoint().y,
-				m_currentShape->GetEndPoint().x,
-				m_currentShape->GetEndPoint().y);
 		}
 		else {
 			delete m_currentShape;//如果不在绘图区域，释放内存
@@ -258,8 +264,6 @@ void CDrawingAppDlg::OnRButtonUp(UINT nFlags, CPoint point)
 	m_currentDrag = nullptr;
 }
 
-
-
 void CDrawingAppDlg::OnBnClickedButtonLoad()
 {
 	// TODO: 在此添加控件通知处理程序代码
@@ -288,7 +292,6 @@ void CDrawingAppDlg::OnBnClickedButtonLoad()
 	}
 }
 
-
 void CDrawingAppDlg::OnBnClickedButtonSave()
 {
 	// TODO: 在此添加控件通知处理程序代码
@@ -310,8 +313,15 @@ void CDrawingAppDlg::OnBnClickedButtonSave()
 	}
 }
 
-
 void CDrawingAppDlg::OnBnClickedButtonLine()
 {
 	// TODO: 在此添加控件通知处理程序代码
+	m_mode = DrawLine;
+}
+
+
+void CDrawingAppDlg::OnBnClickedButtonCircle()
+{
+	// TODO: 在此添加控件通知处理程序代码
+	m_mode = DrawCircle;
 }
