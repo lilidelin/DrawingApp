@@ -263,6 +263,29 @@ void CDrawingAppDlg::OnRButtonUp(UINT nFlags, CPoint point)
 void CDrawingAppDlg::OnBnClickedButtonLoad()
 {
 	// TODO: 在此添加控件通知处理程序代码
+	CFileDialog dlg(TRUE, _T("dat"), nullptr, OFN_FILEMUSTEXIST, _T("Shape Files (*.dat)|*.dat|All Files (*.*)|*.*||"));
+	if (dlg.DoModal() == IDOK)
+	{
+		CFile file(dlg.GetPathName(), CFile::modeRead);
+		CArchive ar(&file, CArchive::load);
+		for (CShape* shape : m_shapes)
+		{
+			delete shape;
+		}
+		m_shapes.clear();//清空当前图形
+		int shapeCount = 0;
+		ar >> shapeCount;//加载文件中的图形数量
+		for (int i = 0; i < shapeCount; ++i)
+		{
+			CShape* shape = new CLine(); // 假设只有 CLine 类型
+			shape->Serialize(ar);
+			m_shapes.push_back(shape);
+		}
+		ar.Close();
+		file.Close();
+		InvalidateRect(m_drawArea);
+		AfxMessageBox(_T("Shapes loaded successfully!"));
+	}
 }
 
 
