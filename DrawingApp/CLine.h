@@ -16,6 +16,8 @@ public:
 	CPoint GetStartPoint()override;
 	CPoint GetEndPoint()override;
 	CPoint CaculateOffset(CPoint point)override;
+	virtual CString GetType() const override { return _T("Line"); }
 private:
 	CPoint m_startPoint, m_endPoint;
+	ShapeType LineType{ Line };
 };

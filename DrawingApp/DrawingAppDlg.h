@@ -39,6 +39,7 @@ protected:
 	afx_msg void OnLButtonUp(UINT nFlags, CPoint point);
 	afx_msg void OnRButtonDown(UINT nFlags, CPoint point);
 	afx_msg void OnRButtonUp(UINT nFlags, CPoint point);
+	afx_msg HBRUSH OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor);
 	DECLARE_MESSAGE_MAP()
 
 private:
@@ -48,7 +49,6 @@ private:
 	CRect m_drawArea;   //绘图区域
 	CPoint dragOffset;  //相对起点偏移量
 	enum Mode { None, DrawLine, DrawRectangle, DrawCircle } m_mode = None; // 当前模式
-
 	bool m_isDrawing;  //是否正在绘制
 	bool m_isDragging;//是否正在拖动
 public:

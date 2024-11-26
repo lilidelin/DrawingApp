@@ -63,7 +63,9 @@ void CDrawingAppDlg::DoDataExchange(CDataExchange* pDX)
 
 BEGIN_MESSAGE_MAP(CDrawingAppDlg, CDialogEx)
 	ON_WM_SYSCOMMAND()
+	ON_WM_CTLCOLOR()
 	ON_WM_PAINT()
+	ON_WM_ERASEBKGND()
 	ON_WM_QUERYDRAGICON()
 	ON_WM_LBUTTONDOWN()
 	ON_WM_LBUTTONUP()
@@ -150,22 +152,56 @@ HCURSOR CDrawingAppDlg::OnQueryDragIcon()
 	return static_cast<HCURSOR>(m_hIcon);
 }
 
+HBRUSH CDrawingAppDlg::OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor)
+{
+	if (pWnd->GetDlgCtrlID() == IDC_DRAW_AREA && nCtlColor == CTLCOLOR_STATIC)
+	{
+		pDC->SetBkMode(TRANSPARENT);
+		return (HBRUSH)GetStockObject(NULL_BRUSH);
+	}
+	return CDialogEx::OnCtlColor(pDC, pWnd, nCtlColor);
+}
+
+
 void CDrawingAppDlg::OnPaint()
 {
-	CClientDC dc(this); // 用于绘制的设备上下文
-	
-	// 遍历所有图形并绘制
+	CPaintDC dc(this); // 用于绘制的设备上下文
+
+	// 获取窗口区域
+	CRect rect;
+	GetClientRect(&rect);
+
+	// 创建内存 DC 和兼容位图
+	CDC memDC;
+	CBitmap bufferBitmap;
+	memDC.CreateCompatibleDC(&dc);
+	bufferBitmap.CreateCompatibleBitmap(&dc, rect.Width(), rect.Height());
+
+	// 选择位图到内存 DC 中
+	CBitmap* pOldBitmap = memDC.SelectObject(&bufferBitmap);
+
+	// 填充背景
+	memDC.FillSolidRect(&rect, RGB(255, 255, 255)); // 白色背景
+
+	// 绘制所有形状到内存 DC
 	for (CShape* shape : m_shapes)
 	{
-		shape->Draw(&dc);
+		shape->Draw(&memDC); // 确保 CShape::Draw 的实现是正确的
 	}
 
-	// 如果正在绘制，绘制临时图形
+	// 绘制当前正在绘制的图形
 	if (m_currentShape)
 	{
-		m_currentShape->Draw(&dc);
+		m_currentShape->Draw(&memDC);
 	}
+
+	// 将内存 DC 的内容拷贝到屏幕 DC
+	dc.BitBlt(0, 0, rect.Width(), rect.Height(), &memDC, 0, 0, SRCCOPY);
+
+	// 恢复原来的位图，释放资源
+	memDC.SelectObject(pOldBitmap);
 }
+
 void CDrawingAppDlg::OnLButtonDown(UINT nFlags, CPoint point)
 {
 	if (m_mode == None)return;
@@ -281,9 +317,20 @@ void CDrawingAppDlg::OnBnClickedButtonLoad()
 		ar >> shapeCount;//加载文件中的图形数量
 		for (int i = 0; i < shapeCount; ++i)
 		{
-			CShape* shape = new CLine(); // 假设只有 CLine 类型
-			shape->Serialize(ar);
-			m_shapes.push_back(shape);
+			CString type;
+			ar >> type;
+			CShape* shape = nullptr;
+			if (type == _T("Line")) {
+				shape = new CLine();
+			}
+			else if (type == _T("Circle"))
+			{
+				shape = new CCircle();
+			}
+			if (shape) {
+				shape->Serialize(ar);
+				m_shapes.push_back(shape);
+			}
 		}
 		ar.Close();
 		file.Close();

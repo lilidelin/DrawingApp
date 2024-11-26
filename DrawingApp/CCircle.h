@@ -14,6 +14,8 @@ public:
 	CPoint GetStartPoint() override;
 	CPoint GetEndPoint() override;
 	CPoint CaculateOffset(CPoint point) override;
+	void Serialize(CArchive& ar)override;
+	virtual CString GetType() const override { return _T("Circle"); }
 private:
 	CPoint m_center;
 	int m_radius;

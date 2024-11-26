@@ -39,3 +39,16 @@ CPoint CCircle::CaculateOffset(CPoint point)
 {
 	return CPoint();
 }
+
+void CCircle::Serialize(CArchive& ar)
+{
+	if (ar.IsStoring())
+	{
+		CString type = GetType();
+		ar << type;
+		ar << m_center << m_radius;
+	}
+	else {
+		ar >> m_center >> m_radius;
+	}
+}

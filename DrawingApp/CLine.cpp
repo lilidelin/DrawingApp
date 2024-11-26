@@ -25,6 +25,8 @@ void CLine::Serialize(CArchive& ar)
 {
 	if (ar.IsStoring())
 	{
+		CString type = GetType();
+		ar << type;
 		ar << m_startPoint << m_endPoint;
 	}
 	else {
@@ -50,3 +52,4 @@ CPoint CLine::GetEndPoint()
 CPoint CLine::CaculateOffset(CPoint point) {
 	return CPoint(point.x - m_startPoint.x, point.y - m_startPoint.y);
 }
+
