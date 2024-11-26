@@ -19,5 +19,4 @@ public:
 	virtual CString GetType() const override { return _T("Line"); }
 private:
 	CPoint m_startPoint, m_endPoint;
-	ShapeType LineType{ Line };
 };

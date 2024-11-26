@@ -76,6 +76,7 @@ BEGIN_MESSAGE_MAP(CDrawingAppDlg, CDialogEx)
 	ON_BN_CLICKED(IDC_BUTTON_SAVE, &CDrawingAppDlg::OnBnClickedButtonSave)
 	ON_BN_CLICKED(IDE_BUTTON_Line, &CDrawingAppDlg::OnBnClickedButtonLine)
 	ON_BN_CLICKED(IDC_BUTTON_Circle, &CDrawingAppDlg::OnBnClickedButtonCircle)
+	ON_BN_CLICKED(IDC_BUTTON_Rectangle, &CDrawingAppDlg::OnBnClickedButtonRectangle)
 END_MESSAGE_MAP()
 
 
@@ -162,7 +163,6 @@ HBRUSH CDrawingAppDlg::OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor)
 	return CDialogEx::OnCtlColor(pDC, pWnd, nCtlColor);
 }
 
-
 void CDrawingAppDlg::OnPaint()
 {
 	CPaintDC dc(this); // 用于绘制的设备上下文
@@ -216,6 +216,7 @@ void CDrawingAppDlg::OnLButtonDown(UINT nFlags, CPoint point)
 			m_currentShape = new CLine(point, point);
 			break;
 		case DrawRectangle:
+			m_currentShape = new CRectangle(point, point);
 			break;
 		case DrawCircle:
 			m_currentShape = new CCircle(point, 0);//创建圆形
@@ -327,6 +328,10 @@ void CDrawingAppDlg::OnBnClickedButtonLoad()
 			{
 				shape = new CCircle();
 			}
+			else if (type == _T("Rectangle"))
+			{
+				shape = new CRectangle();
+			}
 			if (shape) {
 				shape->Serialize(ar);
 				m_shapes.push_back(shape);
@@ -366,9 +371,15 @@ void CDrawingAppDlg::OnBnClickedButtonLine()
 	m_mode = DrawLine;
 }
 
-
 void CDrawingAppDlg::OnBnClickedButtonCircle()
 {
 	// TODO: 在此添加控件通知处理程序代码
 	m_mode = DrawCircle;
+}
+
+
+void CDrawingAppDlg::OnBnClickedButtonRectangle()
+{
+	// TODO: 在此添加控件通知处理程序代码
+	m_mode = DrawRectangle;
 }

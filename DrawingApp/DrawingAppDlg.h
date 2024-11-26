@@ -5,6 +5,7 @@
 #pragma once
 #include"CLine.h"
 #include"CCircle.h"
+#include"CRectangle.h"
 #include<vector>
 
 
@@ -56,4 +57,5 @@ public:
 	afx_msg void OnBnClickedButtonSave();
 	afx_msg void OnBnClickedButtonLine();
 	afx_msg void OnBnClickedButtonCircle();
+	afx_msg void OnBnClickedButtonRectangle();
 };

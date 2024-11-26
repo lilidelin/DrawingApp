@@ -185,6 +185,7 @@
   <ItemGroup>
     <ClInclude Include="CCircle.h" />
     <ClInclude Include="CLine.h" />
+    <ClInclude Include="CRectangle.h" />
     <ClInclude Include="CShape.h" />
     <ClInclude Include="DrawingApp.h" />
     <ClInclude Include="DrawingAppDlg.h" />
@@ -196,6 +197,7 @@
   <ItemGroup>
     <ClCompile Include="CCircle.cpp" />
     <ClCompile Include="CLine.cpp" />
+    <ClCompile Include="CRectangle.cpp" />
     <ClCompile Include="CShape.cpp" />
     <ClCompile Include="DrawingApp.cpp" />
     <ClCompile Include="DrawingAppDlg.cpp" />
